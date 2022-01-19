@@ -41,13 +41,30 @@ SELECT
 	t1.book_ref,
 	AVG(t1.total_amount) AS book_amount,
 	SUM(t3.amount) AS ticket_amount,
-	ABS(AVG(t1.total_amount) - SUM(t3.amount)) AS diff_amount
+	SUM(ABS(AVG(t1.total_amount) - SUM(t3.amount))) AS diff_amount
 FROM
 	ironhack.bookings.bookings AS t1 INNER JOIN
 	ironhack.bookings.tickets AS t2 ON t1.book_ref = t2.book_ref INNER JOIN
 	ironhack.bookings.ticket_flights AS t3 ON  t2.ticket_no=t3.ticket_no
 GROUP BY 
 	t1.book_ref;
+
+SELECT
+	SUM(TB_AGG_BOOK.diff_amount) AS DIFF_TOTAL
+FROM
+	(
+	SELECT
+		t1.book_ref,
+		AVG(t1.total_amount) AS book_amount,
+		SUM(t3.amount) AS ticket_amount,
+		ABS(AVG(t1.total_amount) - SUM(t3.amount)) AS diff_amount
+	FROM
+		ironhack.bookings.bookings AS t1 INNER JOIN
+		ironhack.bookings.tickets AS t2 ON t1.book_ref = t2.book_ref INNER JOIN
+		ironhack.bookings.ticket_flights AS t3 ON  t2.ticket_no=t3.ticket_no
+	GROUP BY 
+		t1.book_ref
+	) AS TB_AGG_BOOK;
 
 
 -- Análise de % de atrasos e ticket médio por status de atraso
@@ -97,7 +114,10 @@ SELECT
 	t2.ticket_no,
 	t3.flight_id,
 	t3.amount,
-	CASE WHEN t4.actual_departure > t4.scheduled_departure + INTERVAL '2 hours' THEN 'ATRASO'
+	t4.actual_departure, 
+	t4.scheduled_departure,
+	CASE WHEN t4.actual_departure > (t4.scheduled_departure + INTERVAL '4 hours') THEN 'MUITO ATRASO'
+ 		 WHEN t4.actual_departure > (t4.scheduled_departure + INTERVAL '2 hours') THEN 'ATRASO'
 		 ELSE 'PONTUAL' END AS classif_atraso
 FROM
 	ironhack.bookings.bookings AS t1 INNER JOIN
@@ -110,8 +130,9 @@ WHERE
 
 SELECT 
 	tb_classif_atraso.classif_atraso,
-	COUNT(tb_classif_atraso.flight_id) AS num_voo_atrasado,
-	AVG(tb_classif_atraso.amount) AS ticket_medio_atraso
+	COUNT(*) AS num_voo_ticket_atrasado,
+	COUNT(DISTINCT tb_classif_atraso.flight_id) AS num_voo_ticket_atrasado,
+	AVG(tb_classif_atraso.amount) AS valor_medio_atraso	
 FROM
 	(
 	SELECT
@@ -120,8 +141,9 @@ FROM
 		t2.ticket_no,
 		t3.flight_id,
 		t3.amount,
-		CASE WHEN t4.actual_departure > t4.scheduled_departure + INTERVAL '2 hours' THEN 'ATRASO'
-			 ELSE 'PONTUAL' END AS classif_atraso
+		CASE WHEN t4.actual_departure > (t4.scheduled_departure + INTERVAL '4 hours') THEN 'MUITO ATRASO'
+ 		 	 WHEN t4.actual_departure > (t4.scheduled_departure + INTERVAL '2 hours') THEN 'ATRASO'
+		 	 ELSE 'PONTUAL' END AS classif_atraso
 	FROM
 		ironhack.bookings.bookings AS t1 INNER JOIN
 		ironhack.bookings.tickets AS t2 ON t1.book_ref = t2.book_ref INNER JOIN
@@ -137,8 +159,9 @@ GROUP BY
 CREATE OR REPLACE VIEW ironhack.bookings.tb_atrasos AS
 SELECT 
 	tb_classif_atraso.classif_atraso,
-	COUNT(tb_classif_atraso.flight_id) AS num_voo_atrasado,
-	AVG(tb_classif_atraso.amount) AS ticket_medio_atraso
+	COUNT(*) AS num_voo_ticket_atrasado,
+	COUNT(DISTINCT tb_classif_atraso.flight_id) AS num_voo_atrasado,
+	AVG(tb_classif_atraso.amount) AS valor_medio_atraso	
 FROM
 	(
 	SELECT
@@ -147,9 +170,9 @@ FROM
 		t2.ticket_no,
 		t3.flight_id,
 		t3.amount,
-		CASE WHEN t4.actual_departure IS NULL THEN 'CANCELADO'
-			 WHEN t4.actual_departure > t4.scheduled_departure + INTERVAL '2 hours' THEN 'ATRASO'
-			 ELSE 'PONTUAL' END AS classif_atraso
+		CASE WHEN t4.actual_departure > (t4.scheduled_departure + INTERVAL '4 hours') THEN 'MUITO ATRASO'
+ 		 	 WHEN t4.actual_departure > (t4.scheduled_departure + INTERVAL '2 hours') THEN 'ATRASO'
+		 	 ELSE 'PONTUAL' END AS classif_atraso
 	FROM
 		ironhack.bookings.bookings AS t1 INNER JOIN
 		ironhack.bookings.tickets AS t2 ON t1.book_ref = t2.book_ref INNER JOIN
