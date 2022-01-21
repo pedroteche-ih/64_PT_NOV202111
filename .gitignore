@@ -2,3 +2,4 @@
 aulas/.ipynb_checkpoints/
 
 labs/data/
+aulas/credentials/credentials_ultrasecret.env
