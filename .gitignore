@@ -3,3 +3,7 @@ aulas/.ipynb_checkpoints/
 
 labs/data/
 aulas/credentials/credentials_ultrasecret.env
+aulas/tmp/results_1.csv
+aulas/tmp/
+aulas/tmp_par/
+aulas/__pycache__/
