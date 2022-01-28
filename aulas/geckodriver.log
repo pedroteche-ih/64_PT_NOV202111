@@ -1,0 +1,2 @@
+1643331378725	geckodriver	INFO	Listening on 127.0.0.1:59706
+1643331381753	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "59707" "-no-remote" "-profile" "C:\\Users\\Pedro\\AppData\\Local\\Temp\\rust_mozprofile6s0UwG"
