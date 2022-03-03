@@ -7,6 +7,7 @@ SELECT
 	ooid.seller_id,
 	ooid.price,
 	ooid.freight_value,
+	ood.order_purchase_timestamp,
 	date_part('YEAR', ood.order_approved_at) * 100 + date_part('MONTH', ood.order_approved_at) AS anomes_faturado,
 	opd.product_category_name,
 	opd.product_weight_g,
