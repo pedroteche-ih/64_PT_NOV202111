@@ -9,3 +9,5 @@ aulas/tmp_par/
 aulas/__pycache__/
 aulas/data/bestsellers with categories.csv
 aulas/data/household_power_consumption.txt
+aulas/.DS_Store
+.DS_Store
