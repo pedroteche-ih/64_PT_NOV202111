@@ -11,3 +11,12 @@ aulas/data/bestsellers with categories.csv
 aulas/data/household_power_consumption.txt
 aulas/.DS_Store
 .DS_Store
+aulas/Preparacao Hotel Booking.ipynb
+aulas/data/tb_hotel_bookings_full.csv
+aulas/data/tb_hotel_valid.csv
+aulas/data/tb_hotel_traintest.csv
+aulas/data/tb_hotel_feat_valid.csv
+.gitignore
+.gitignore
+aulas/data/tb_hotel_sample_valid.csv
+aulas/data/tb_hotel_gt_valid.csv
